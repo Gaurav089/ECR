@@ -12,7 +12,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Login to AWS ECR
+      - name: Set AWS region
+        run: echo "AWS_DEFAULT_REGION=ap-south-1" >> $GITHUB_ENV
+
+      - name: Log in to AWS ECR
         run: aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 730335492406.dkr.ecr.ap-south-1.amazonaws.com
 
       - name: Build Docker image
@@ -23,3 +26,7 @@ jobs:
 
       - name: Push Docker image to ECR
         run: docker push 730335492406.dkr.ecr.ap-south-1.amazonaws.com/pipeline:latest
+        env:
+          AWS_REGION: ap-south-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
